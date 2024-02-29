@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Organizer.Infrastructure.Data;
 
@@ -11,16 +12,15 @@ using Organizer.Infrastructure.Data;
 namespace Organizer.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240229145931_Adding Collectives")]
+    partial class AddingCollectives
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.2")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -191,44 +191,6 @@ namespace Organizer.Infrastructure.Data.Migrations
                     b.ToTable("Collectives");
                 });
 
-            modelBuilder.Entity("Organizer.Domain.Entities.Expense", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
-
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CreditorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DebtorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreditorId");
-
-                    b.HasIndex("DebtorId");
-
-                    b.ToTable("Expenses");
-                });
-
             modelBuilder.Entity("Organizer.Domain.Entities.FeministCollective", b =>
                 {
                     b.Property<int>("Id")
@@ -250,6 +212,7 @@ namespace Organizer.Infrastructure.Data.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("FeministId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTimeOffset>("LastModified")
@@ -264,7 +227,7 @@ namespace Organizer.Infrastructure.Data.Migrations
 
                     b.HasIndex("FeministId");
 
-                    b.ToTable("FeministCollectives");
+                    b.ToTable("FeministCollective");
                 });
 
             modelBuilder.Entity("Organizer.Domain.Entities.TodoItem", b =>
@@ -362,7 +325,6 @@ namespace Organizer.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreditorId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("DebtorId")
@@ -506,23 +468,6 @@ namespace Organizer.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Organizer.Domain.Entities.Expense", b =>
-                {
-                    b.HasOne("Organizer.Domain.Entities.Collective", "Creditor")
-                        .WithMany()
-                        .HasForeignKey("CreditorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Organizers.Domain.Entities.Feminist", "Debtor")
-                        .WithMany()
-                        .HasForeignKey("DebtorId");
-
-                    b.Navigation("Creditor");
-
-                    b.Navigation("Debtor");
-                });
-
             modelBuilder.Entity("Organizer.Domain.Entities.FeministCollective", b =>
                 {
                     b.HasOne("Organizer.Domain.Entities.Collective", "Collective")
@@ -533,7 +478,9 @@ namespace Organizer.Infrastructure.Data.Migrations
 
                     b.HasOne("Organizers.Domain.Entities.Feminist", "Feminist")
                         .WithMany("FeministCollectives")
-                        .HasForeignKey("FeministId");
+                        .HasForeignKey("FeministId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Collective");
 
@@ -578,9 +525,7 @@ namespace Organizer.Infrastructure.Data.Migrations
                 {
                     b.HasOne("Organizers.Domain.Entities.Feminist", "Creditor")
                         .WithMany()
-                        .HasForeignKey("CreditorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreditorId");
 
                     b.HasOne("Organizer.Domain.Entities.Collective", "Debtor")
                         .WithMany()

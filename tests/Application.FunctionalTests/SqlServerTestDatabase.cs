@@ -32,6 +32,7 @@ public class SqlServerTestDatabase : ITestDatabase
         _connection = new SqlConnection(_connectionString);
 
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseLazyLoadingProxies()
             .UseSqlServer(_connectionString)
             .Options;
 

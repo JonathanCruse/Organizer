@@ -15,6 +15,11 @@ public class ApplicationDbContext : IdentityDbContext<Feminist>, IApplicationDbC
     public DbSet<TodoList> TodoLists => Set<TodoList>();
 
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
+    public DbSet<FeministCollective> FeministCollectives => Set<FeministCollective>();
+    public DbSet<Feminist> Feminists => Set<Feminist>();
+    public DbSet<Collective> Collectives => Set<Collective>();
+    public DbSet<Transaction> Transactions => Set<Transaction>();
+    public DbSet<Expense> Expenses => Set<Expense>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

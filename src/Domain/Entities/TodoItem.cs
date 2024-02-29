@@ -27,5 +27,5 @@ public class TodoItem : BaseAuditableEntity
         }
     }
 
-    public TodoList List { get; set; } = null!;
+    public virtual TodoList List { get; set; } = null!;
 }
