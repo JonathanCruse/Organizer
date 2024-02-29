@@ -1,0 +1,7 @@
+﻿using MediatR;
+
+namespace Organizer.Domain.Common;
+
+public abstract class BaseEvent : INotification
+{
+}
