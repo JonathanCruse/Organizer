@@ -1,5 +1,4 @@
 ﻿using Organizer.Domain.Entities;
-using Organizers.Domain.Entities;
 
 namespace Organizer.Application.Common.Interfaces;
 

@@ -390,7 +390,7 @@ namespace Organizer.Infrastructure.Data.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Organizers.Domain.Entities.Feminist", b =>
+            modelBuilder.Entity("Organizer.Domain.Entities.Feminist", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -469,7 +469,7 @@ namespace Organizer.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Organizers.Domain.Entities.Feminist", null)
+                    b.HasOne("Organizer.Domain.Entities.Feminist", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -478,7 +478,7 @@ namespace Organizer.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Organizers.Domain.Entities.Feminist", null)
+                    b.HasOne("Organizer.Domain.Entities.Feminist", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -493,7 +493,7 @@ namespace Organizer.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Organizers.Domain.Entities.Feminist", null)
+                    b.HasOne("Organizer.Domain.Entities.Feminist", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -502,7 +502,7 @@ namespace Organizer.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Organizers.Domain.Entities.Feminist", null)
+                    b.HasOne("Organizer.Domain.Entities.Feminist", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -511,7 +511,7 @@ namespace Organizer.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Organizer.Domain.Entities.Expense", b =>
                 {
-                    b.HasOne("Organizers.Domain.Entities.Feminist", "Debtor")
+                    b.HasOne("Organizer.Domain.Entities.Feminist", "Debtor")
                         .WithMany()
                         .HasForeignKey("DebtorId");
 
@@ -534,7 +534,7 @@ namespace Organizer.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Organizers.Domain.Entities.Feminist", "Feminist")
+                    b.HasOne("Organizer.Domain.Entities.Feminist", "Feminist")
                         .WithMany("FeministCollectives")
                         .HasForeignKey("FeministId");
 
@@ -579,7 +579,7 @@ namespace Organizer.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Organizer.Domain.Entities.Transaction", b =>
                 {
-                    b.HasOne("Organizers.Domain.Entities.Feminist", "Creditor")
+                    b.HasOne("Organizer.Domain.Entities.Feminist", "Creditor")
                         .WithMany()
                         .HasForeignKey("CreditorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -613,7 +613,7 @@ namespace Organizer.Infrastructure.Data.Migrations
                     b.Navigation("Expenses");
                 });
 
-            modelBuilder.Entity("Organizers.Domain.Entities.Feminist", b =>
+            modelBuilder.Entity("Organizer.Domain.Entities.Feminist", b =>
                 {
                     b.Navigation("FeministCollectives");
                 });

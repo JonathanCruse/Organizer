@@ -1,10 +1,8 @@
 ﻿using System.Reflection;
 using Organizer.Application.Common.Interfaces;
 using Organizer.Domain.Entities;
-using Organizer.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Organizers.Domain.Entities;
 
 namespace Organizer.Infrastructure.Data;
 

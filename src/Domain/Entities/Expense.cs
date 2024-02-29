@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Organizers.Domain.Entities;
+using Organizer.Domain.Entities;
 
 namespace Organizer.Domain.Entities;
 public class Expense : BaseAuditableEntity

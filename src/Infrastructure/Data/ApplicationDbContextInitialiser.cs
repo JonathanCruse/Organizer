@@ -1,13 +1,10 @@
-﻿using System.Runtime.InteropServices;
-using Organizer.Domain.Constants;
+﻿using Organizer.Domain.Constants;
 using Organizer.Domain.Entities;
-using Organizer.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Organizers.Domain.Entities;
 
 namespace Organizer.Infrastructure.Data;
 
