@@ -10,5 +10,5 @@ public class Expense : BaseAuditableEntity
 {
     public float Amount { get; set; }
     public virtual Feminist Debtor { get; set; } = null!;
-    public virtual Collective Creditor { get; set; } = null!;
+    public virtual Transaction Transaction { get; set; } = null!;
 }

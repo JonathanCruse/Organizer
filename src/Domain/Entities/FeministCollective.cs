@@ -10,6 +10,6 @@ public class FeministCollective : BaseAuditableEntity
 {
     public virtual Collective Collective { get; set; } = null!;
     public virtual Feminist Feminist { get; set; } = null!;
-    public float CurrentBalance { get; set; }
+    public float Balance { get; set; }
 
 }

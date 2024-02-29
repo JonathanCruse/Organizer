@@ -208,9 +208,6 @@ namespace Organizer.Infrastructure.Data.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CreditorId")
-                        .HasColumnType("int");
-
                     b.Property<string>("DebtorId")
                         .HasColumnType("nvarchar(450)");
 
@@ -220,11 +217,14 @@ namespace Organizer.Infrastructure.Data.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TransactionId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CreditorId");
-
                     b.HasIndex("DebtorId");
+
+                    b.HasIndex("TransactionId");
 
                     b.ToTable("Expenses");
                 });
@@ -237,6 +237,9 @@ namespace Organizer.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<float>("Balance")
+                        .HasColumnType("real");
+
                     b.Property<int>("CollectiveId")
                         .HasColumnType("int");
 
@@ -245,9 +248,6 @@ namespace Organizer.Infrastructure.Data.Migrations
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("CurrentBalance")
-                        .HasColumnType("real");
 
                     b.Property<string>("FeministId")
                         .HasColumnType("nvarchar(450)");
@@ -508,19 +508,19 @@ namespace Organizer.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Organizer.Domain.Entities.Expense", b =>
                 {
-                    b.HasOne("Organizer.Domain.Entities.Collective", "Creditor")
-                        .WithMany()
-                        .HasForeignKey("CreditorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Organizers.Domain.Entities.Feminist", "Debtor")
                         .WithMany()
                         .HasForeignKey("DebtorId");
 
-                    b.Navigation("Creditor");
+                    b.HasOne("Organizer.Domain.Entities.Transaction", "Transaction")
+                        .WithMany("Expenses")
+                        .HasForeignKey("TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Debtor");
+
+                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("Organizer.Domain.Entities.FeministCollective", b =>
@@ -583,7 +583,7 @@ namespace Organizer.Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Organizer.Domain.Entities.Collective", "Debtor")
-                        .WithMany()
+                        .WithMany("Transactions")
                         .HasForeignKey("DebtorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -596,11 +596,18 @@ namespace Organizer.Infrastructure.Data.Migrations
             modelBuilder.Entity("Organizer.Domain.Entities.Collective", b =>
                 {
                     b.Navigation("CollectivesFeminists");
+
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Organizer.Domain.Entities.TodoList", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Organizer.Domain.Entities.Transaction", b =>
+                {
+                    b.Navigation("Expenses");
                 });
 
             modelBuilder.Entity("Organizers.Domain.Entities.Feminist", b =>
