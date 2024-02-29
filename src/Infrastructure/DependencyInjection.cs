@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using Organizers.Domain.Entities;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -33,7 +34,7 @@ public static class DependencyInjection
         services.AddScoped<ApplicationDbContextInitialiser>();
 
         services
-            .AddDefaultIdentity<ApplicationUser>()
+            .AddDefaultIdentity<Feminist>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
