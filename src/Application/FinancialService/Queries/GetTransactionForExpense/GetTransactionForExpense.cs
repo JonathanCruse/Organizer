@@ -18,15 +18,24 @@ public class GetTransactionForExpenseQueryValidator : AbstractValidator<GetTrans
 public class GetTransactionForExpenseQueryHandler : IRequestHandler<GetTransactionForExpenseQuery, TransactionDto>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
+    private readonly IUser _user;
 
-    public GetTransactionForExpenseQueryHandler(IApplicationDbContext context)
+
+    public GetTransactionForExpenseQueryHandler(IApplicationDbContext context, IMapper mapper, IUser user)
     {
         _context = context;
+        _mapper = mapper;
+        _user = user;
     }
 
     public async Task<TransactionDto> Handle(GetTransactionForExpenseQuery request, CancellationToken cancellationToken)
     {
         await Task.Delay(1);
-        throw new NotImplementedException();
+        return _context.Expenses
+            .Where(expense => expense.Id == request.ExpenseId)
+            .Select(expense => expense.Transaction)
+            .ProjectTo<TransactionDto>(_mapper.ConfigurationProvider)
+            .First();
     }
 }

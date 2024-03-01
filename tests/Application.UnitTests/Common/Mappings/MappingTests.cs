@@ -7,6 +7,7 @@ using Organizer.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using Organizer.Application.TodoLists.Queries.GetTodos;
 using Organizer.Domain.Entities;
 using NUnit.Framework;
+using Organizer.Application.FinancialService.Dtos;
 
 namespace Organizer.Application.UnitTests.Common.Mappings;
 
@@ -35,6 +36,11 @@ public class MappingTests
     [TestCase(typeof(TodoList), typeof(LookupDto))]
     [TestCase(typeof(TodoItem), typeof(LookupDto))]
     [TestCase(typeof(TodoItem), typeof(TodoItemBriefDto))]
+    [TestCase(typeof(Collective), typeof(CollectiveDto))]
+    [TestCase(typeof(Feminist), typeof(FeministDto))]
+    [TestCase(typeof(FeministCollective), typeof(FeministCollectiveDto))]
+    [TestCase(typeof(Transaction), typeof(TransactionDto))]
+    [TestCase(typeof(Expense), typeof(ExpenseDto))]
     public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
     {
         var instance = GetInstanceOf(source);

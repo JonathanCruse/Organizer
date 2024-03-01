@@ -75,13 +75,19 @@ public class ApplicationDbContextInitialiser
 
         // Default users
         var administrator = new Feminist { UserName = "administrator@localhost", Email = "administrator@localhost" };
+        var feminist1 = new Feminist { UserName = "feminist1@localhost", Email = "feminist1@localhost" };
+        var feminist2 = new Feminist { UserName = "feminist2@localhost", Email = "feminist2@localhost" };
+        var feminist3 = new Feminist { UserName = "feminist3@localhost", Email = "feminist3@localhost" };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
             await _userManager.CreateAsync(administrator, "Administrator1!");
             if (!string.IsNullOrWhiteSpace(administratorRole.Name))
             {
-                await _userManager.AddToRolesAsync(administrator, new [] { administratorRole.Name });
+                await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
+                await _userManager.AddToRolesAsync(feminist1, new[] { administratorRole.Name });
+                await _userManager.AddToRolesAsync(feminist2, new[] { administratorRole.Name });
+                await _userManager.AddToRolesAsync(feminist3, new[] { administratorRole.Name });
             }
         }
 
@@ -101,6 +107,83 @@ public class ApplicationDbContextInitialiser
                 }
             });
 
+            await _context.SaveChangesAsync();
+        }
+
+        List<Collective> collectives = [
+                new Collective {
+                    Name = "Collective 1"
+                },
+                new Collective {
+                    Name = "Collective 2"
+                },
+            ];
+
+        List<FeministCollective> feministCollectives = [
+                new FeministCollective {
+                    Feminist = feminist1,
+                    Collective = collectives[0],
+                    Balance = -2f
+                },
+                new FeministCollective {
+                    Feminist = feminist2,
+                    Collective = collectives[0],
+                    Balance = 2f
+                },
+                new FeministCollective {
+                    Feminist = feminist2,
+                    Collective = collectives[1],
+                    Balance = -500f
+                },
+                new FeministCollective {
+                    Feminist = feminist3,
+                    Collective = collectives[1],
+                    Balance = 500f
+                },
+            ];
+        collectives[0].CollectivesFeminists = [feministCollectives[0], feministCollectives[1]];
+        collectives[1].CollectivesFeminists = [feministCollectives[2], feministCollectives[3]];
+
+        List<Expense> expenses = [
+                new Expense {
+                    Amount = 2,
+                    Debtor = feminist1,
+                },
+                new Expense {
+                    Amount = -2,
+                    Debtor = feminist2,
+                },
+                new Expense {
+                    Amount = 500,
+                    Debtor = feminist2,
+                },
+                new Expense {
+                    Amount = -500,
+                    Debtor = feminist3,
+                },
+            ];
+        List<Transaction> transactions = [
+            new Transaction {
+                Amount = 4,
+                Creditor = feminist2,
+                Debtor = collectives[0],
+            },
+            new Transaction {
+                Amount = 1000,
+                Creditor = feminist3,
+                Debtor = collectives[1],
+            }
+        ];
+        expenses[0].Transaction = transactions[0];
+        expenses[1].Transaction = transactions[0];
+        expenses[2].Transaction = transactions[1];
+        expenses[3].Transaction = transactions[1];
+        if (!_context.Collectives.Any())
+        {
+            _context.Collectives.AddRange(collectives);
+            _context.FeministCollectives.AddRange(feministCollectives);
+            _context.Transactions.AddRange(transactions);
+            _context.Expenses.AddRange(expenses);
             await _context.SaveChangesAsync();
         }
     }

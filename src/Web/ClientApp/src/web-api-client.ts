@@ -10,6 +10,352 @@
 
 import followIfLoginRedirect from './components/api-authorization/followIfLoginRedirect';
 
+export class CollectivesClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getCollectives(pageNumber: number, pageSize: number): Promise<PaginatedListOfCollectiveDto> {
+        let url_ = this.baseUrl + "/api/Collectives?";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetCollectives(_response);
+        });
+    }
+
+    protected processGetCollectives(response: Response): Promise<PaginatedListOfCollectiveDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfCollectiveDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfCollectiveDto>(null as any);
+    }
+
+    createCollective(command: CreateCollectiveCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Collectives";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateCollective(_response);
+        });
+    }
+
+    protected processCreateCollective(response: Response): Promise<number> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
+
+    deleteCollective(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/Collectives/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteCollective(_response);
+        });
+    }
+
+    protected processDeleteCollective(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+}
+
+export class ExpensesClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getExpenses(pageNumber: number, pageSize: number): Promise<PaginatedListOfExpenseDto> {
+        let url_ = this.baseUrl + "/api/Expenses?";
+        if (pageNumber === undefined || pageNumber === null)
+            throw new Error("The parameter 'pageNumber' must be defined and cannot be null.");
+        else
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === undefined || pageSize === null)
+            throw new Error("The parameter 'pageSize' must be defined and cannot be null.");
+        else
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetExpenses(_response);
+        });
+    }
+
+    protected processGetExpenses(response: Response): Promise<PaginatedListOfExpenseDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfExpenseDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfExpenseDto>(null as any);
+    }
+
+    createExpense(command: CreateEpenseForBalanceCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Expenses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateExpense(_response);
+        });
+    }
+
+    protected processCreateExpense(response: Response): Promise<number> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
+
+    deleteExpense(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/Expenses/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteExpense(_response);
+        });
+    }
+
+    protected processDeleteExpense(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+}
+
+export class FeministsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getFeminists(collectiveId: number): Promise<PaginatedListOfFeministDto> {
+        let url_ = this.baseUrl + "/api/Feminists?";
+        if (collectiveId === undefined || collectiveId === null)
+            throw new Error("The parameter 'collectiveId' must be defined and cannot be null.");
+        else
+            url_ += "CollectiveId=" + encodeURIComponent("" + collectiveId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetFeminists(_response);
+        });
+    }
+
+    protected processGetFeminists(response: Response): Promise<PaginatedListOfFeministDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfFeministDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfFeministDto>(null as any);
+    }
+
+    createFeminist(command: InviteFeministCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Feminists";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateFeminist(_response);
+        });
+    }
+
+    protected processCreateFeminist(response: Response): Promise<number> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
+}
+
 export class TodoItemsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -376,6 +722,168 @@ export class TodoListsClient {
     }
 }
 
+export class TransactionsClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    getTransaction(id: number): Promise<TransactionDto> {
+        let url_ = this.baseUrl + "/api/Transactions/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetTransaction(_response);
+        });
+    }
+
+    protected processGetTransaction(response: Response): Promise<TransactionDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TransactionDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<TransactionDto>(null as any);
+    }
+
+    deleteTransaction(id: number): Promise<void> {
+        let url_ = this.baseUrl + "/api/Transactions/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processDeleteTransaction(_response);
+        });
+    }
+
+    protected processDeleteTransaction(response: Response): Promise<void> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    getTransactions(collectiveId: number): Promise<PaginatedListOfTransactionDto> {
+        let url_ = this.baseUrl + "/api/Transactions?";
+        if (collectiveId === undefined || collectiveId === null)
+            throw new Error("The parameter 'collectiveId' must be defined and cannot be null.");
+        else
+            url_ += "CollectiveId=" + encodeURIComponent("" + collectiveId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetTransactions(_response);
+        });
+    }
+
+    protected processGetTransactions(response: Response): Promise<PaginatedListOfTransactionDto> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfTransactionDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PaginatedListOfTransactionDto>(null as any);
+    }
+
+    createTransaction(command: CreateTransactionCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Transactions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCreateTransaction(_response);
+        });
+    }
+
+    protected processCreateTransaction(response: Response): Promise<number> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
+}
+
 export class WeatherForecastsClient {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -427,6 +935,578 @@ export class WeatherForecastsClient {
         }
         return Promise.resolve<WeatherForecast[]>(null as any);
     }
+}
+
+export class PaginatedListOfCollectiveDto implements IPaginatedListOfCollectiveDto {
+    items?: CollectiveDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfCollectiveDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(CollectiveDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfCollectiveDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfCollectiveDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfCollectiveDto {
+    items?: CollectiveDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class CollectiveDto implements ICollectiveDto {
+    id?: number;
+    name?: string;
+    collectivesFeminists?: FeministCollectiveDto[];
+    transactions?: TransactionDto[];
+
+    constructor(data?: ICollectiveDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            if (Array.isArray(_data["collectivesFeminists"])) {
+                this.collectivesFeminists = [] as any;
+                for (let item of _data["collectivesFeminists"])
+                    this.collectivesFeminists!.push(FeministCollectiveDto.fromJS(item));
+            }
+            if (Array.isArray(_data["transactions"])) {
+                this.transactions = [] as any;
+                for (let item of _data["transactions"])
+                    this.transactions!.push(TransactionDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CollectiveDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CollectiveDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        if (Array.isArray(this.collectivesFeminists)) {
+            data["collectivesFeminists"] = [];
+            for (let item of this.collectivesFeminists)
+                data["collectivesFeminists"].push(item.toJSON());
+        }
+        if (Array.isArray(this.transactions)) {
+            data["transactions"] = [];
+            for (let item of this.transactions)
+                data["transactions"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ICollectiveDto {
+    id?: number;
+    name?: string;
+    collectivesFeminists?: FeministCollectiveDto[];
+    transactions?: TransactionDto[];
+}
+
+export class FeministCollectiveDto implements IFeministCollectiveDto {
+    balance?: number;
+    feminist?: FeministDto;
+    collective?: CollectiveDto;
+
+    constructor(data?: IFeministCollectiveDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.balance = _data["balance"];
+            this.feminist = _data["feminist"] ? FeministDto.fromJS(_data["feminist"]) : <any>undefined;
+            this.collective = _data["collective"] ? CollectiveDto.fromJS(_data["collective"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): FeministCollectiveDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FeministCollectiveDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["balance"] = this.balance;
+        data["feminist"] = this.feminist ? this.feminist.toJSON() : <any>undefined;
+        data["collective"] = this.collective ? this.collective.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IFeministCollectiveDto {
+    balance?: number;
+    feminist?: FeministDto;
+    collective?: CollectiveDto;
+}
+
+export class FeministDto implements IFeministDto {
+    id?: string;
+    userName?: string;
+    feministsCollectives?: FeministCollectiveDto[];
+
+    constructor(data?: IFeministDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.userName = _data["userName"];
+            if (Array.isArray(_data["feministsCollectives"])) {
+                this.feministsCollectives = [] as any;
+                for (let item of _data["feministsCollectives"])
+                    this.feministsCollectives!.push(FeministCollectiveDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): FeministDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FeministDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["userName"] = this.userName;
+        if (Array.isArray(this.feministsCollectives)) {
+            data["feministsCollectives"] = [];
+            for (let item of this.feministsCollectives)
+                data["feministsCollectives"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IFeministDto {
+    id?: string;
+    userName?: string;
+    feministsCollectives?: FeministCollectiveDto[];
+}
+
+export class TransactionDto implements ITransactionDto {
+    amount?: number;
+    description?: string;
+    creditor?: FeministDto;
+    debtor?: CollectiveDto;
+    expenses?: ExpenseDto[];
+
+    constructor(data?: ITransactionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.amount = _data["amount"];
+            this.description = _data["description"];
+            this.creditor = _data["creditor"] ? FeministDto.fromJS(_data["creditor"]) : <any>undefined;
+            this.debtor = _data["debtor"] ? CollectiveDto.fromJS(_data["debtor"]) : <any>undefined;
+            if (Array.isArray(_data["expenses"])) {
+                this.expenses = [] as any;
+                for (let item of _data["expenses"])
+                    this.expenses!.push(ExpenseDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): TransactionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TransactionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["amount"] = this.amount;
+        data["description"] = this.description;
+        data["creditor"] = this.creditor ? this.creditor.toJSON() : <any>undefined;
+        data["debtor"] = this.debtor ? this.debtor.toJSON() : <any>undefined;
+        if (Array.isArray(this.expenses)) {
+            data["expenses"] = [];
+            for (let item of this.expenses)
+                data["expenses"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ITransactionDto {
+    amount?: number;
+    description?: string;
+    creditor?: FeministDto;
+    debtor?: CollectiveDto;
+    expenses?: ExpenseDto[];
+}
+
+export class ExpenseDto implements IExpenseDto {
+    id?: number;
+    debtor?: FeministDto;
+    amount?: number;
+    transaction?: TransactionDto;
+
+    constructor(data?: IExpenseDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.debtor = _data["debtor"] ? FeministDto.fromJS(_data["debtor"]) : <any>undefined;
+            this.amount = _data["amount"];
+            this.transaction = _data["transaction"] ? TransactionDto.fromJS(_data["transaction"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ExpenseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExpenseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["debtor"] = this.debtor ? this.debtor.toJSON() : <any>undefined;
+        data["amount"] = this.amount;
+        data["transaction"] = this.transaction ? this.transaction.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IExpenseDto {
+    id?: number;
+    debtor?: FeministDto;
+    amount?: number;
+    transaction?: TransactionDto;
+}
+
+export class CreateCollectiveCommand implements ICreateCollectiveCommand {
+    name?: string;
+
+    constructor(data?: ICreateCollectiveCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): CreateCollectiveCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateCollectiveCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ICreateCollectiveCommand {
+    name?: string;
+}
+
+export class PaginatedListOfExpenseDto implements IPaginatedListOfExpenseDto {
+    items?: ExpenseDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfExpenseDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(ExpenseDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfExpenseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfExpenseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfExpenseDto {
+    items?: ExpenseDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class CreateEpenseForBalanceCommand implements ICreateEpenseForBalanceCommand {
+    amount?: number;
+
+    constructor(data?: ICreateEpenseForBalanceCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.amount = _data["amount"];
+        }
+    }
+
+    static fromJS(data: any): CreateEpenseForBalanceCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateEpenseForBalanceCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["amount"] = this.amount;
+        return data;
+    }
+}
+
+export interface ICreateEpenseForBalanceCommand {
+    amount?: number;
+}
+
+export class PaginatedListOfFeministDto implements IPaginatedListOfFeministDto {
+    items?: FeministDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfFeministDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(FeministDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfFeministDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfFeministDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfFeministDto {
+    items?: FeministDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class InviteFeministCommand implements IInviteFeministCommand {
+    email?: string;
+    collectiveId?: number;
+
+    constructor(data?: IInviteFeministCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.collectiveId = _data["collectiveId"];
+        }
+    }
+
+    static fromJS(data: any): InviteFeministCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new InviteFeministCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["collectiveId"] = this.collectiveId;
+        return data;
+    }
+}
+
+export interface IInviteFeministCommand {
+    email?: string;
+    collectiveId?: number;
 }
 
 export class PaginatedListOfTodoItemBriefDto implements IPaginatedListOfTodoItemBriefDto {
@@ -962,6 +2042,110 @@ export class UpdateTodoListCommand implements IUpdateTodoListCommand {
 export interface IUpdateTodoListCommand {
     id?: number;
     title?: string | undefined;
+}
+
+export class PaginatedListOfTransactionDto implements IPaginatedListOfTransactionDto {
+    items?: TransactionDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfTransactionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(TransactionDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfTransactionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfTransactionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfTransactionDto {
+    items?: TransactionDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class CreateTransactionCommand implements ICreateTransactionCommand {
+    description?: string;
+    amount?: number;
+
+    constructor(data?: ICreateTransactionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.description = _data["description"];
+            this.amount = _data["amount"];
+        }
+    }
+
+    static fromJS(data: any): CreateTransactionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateTransactionCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["description"] = this.description;
+        data["amount"] = this.amount;
+        return data;
+    }
+}
+
+export interface ICreateTransactionCommand {
+    description?: string;
+    amount?: number;
 }
 
 export class WeatherForecast implements IWeatherForecast {

@@ -4,7 +4,7 @@ using Organizer.Application.TodoLists.Queries.GetTodos;
 
 namespace Organizer.Application.FinancialService.Dtos;
 
-public class FeministsCollectivesDto
+public class FeministCollectiveDto
 {
     public float Balance { get; set; }
     public FeministDto Feminist { get; set; } = new FeministDto();
@@ -13,7 +13,7 @@ public class FeministsCollectivesDto
     {
         public Mapping()
         {
-            CreateMap<FeministCollective, FeministsCollectivesDto>();
+            CreateMap<FeministCollective, FeministCollectiveDto>();
         }
     }
 }

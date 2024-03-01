@@ -7,7 +7,7 @@ public class FeministDto
 {
     public string Id { get; set; } = null!;
     public string UserName { get; set; } = null!;
-    public IReadOnlyCollection<FeministsCollectivesDto> FeministsCollectives { get; set; } = new List<FeministsCollectivesDto>();
+    public IReadOnlyCollection<FeministCollectiveDto> FeministsCollectives { get; set; } = new List<FeministCollectiveDto>();
     private class Mapping : Profile
     {
         public Mapping()
