@@ -1,4 +1,5 @@
-﻿using Organizer.Application.Common.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Organizer.Application.Common.Models;
 using Organizer.Application.FinancialService.Commands.CreateEpenseForBalance;
 using Organizer.Application.FinancialService.Commands.InviteFeminist;
 using Organizer.Application.FinancialService.Dtos;
@@ -23,13 +24,18 @@ public class Feminists : EndpointGroupBase
         app.MapGroup(this)
             .RequireAuthorization()
             .MapGet(GetFeminists)
-            .MapPost(CreateFeminist)
-            ;
+            .MapGet(GetBalance, "Balance")
+            .MapPost(CreateFeminist);
     }
 
     public Task<PaginatedList<FeministDto>> GetFeminists(ISender sender, [AsParameters] GetFeministsForCollectiveQuery query)
     {
         return sender.Send(query);
+    }
+
+    public Task<float> GetBalance(ISender sender)
+    {
+        return sender.Send(new GetBalanceForFeministQuery());
     }
 
     public Task CreateFeminist(ISender sender, InviteFeministCommand command)

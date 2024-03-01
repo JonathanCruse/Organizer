@@ -349,6 +349,42 @@ export class FeministsClient {
         }
         return Promise.resolve<void>(null as any);
     }
+
+    getBalance(): Promise<number> {
+        let url_ = this.baseUrl + "/api/Feminists/Balance";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetBalance(_response);
+        });
+    }
+
+    protected processGetBalance(response: Response): Promise<number> {
+        followIfLoginRedirect(response);
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<number>(null as any);
+    }
 }
 
 export class TodoItemsClient {
@@ -1000,6 +1036,7 @@ export class CollectiveDto implements ICollectiveDto {
     id?: number;
     name?: string;
     collectivesFeminists?: FeministCollectiveDto[];
+    lastModified?: Date;
     transactions?: TransactionDto[];
 
     constructor(data?: ICollectiveDto) {
@@ -1020,6 +1057,7 @@ export class CollectiveDto implements ICollectiveDto {
                 for (let item of _data["collectivesFeminists"])
                     this.collectivesFeminists!.push(FeministCollectiveDto.fromJS(item));
             }
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
             if (Array.isArray(_data["transactions"])) {
                 this.transactions = [] as any;
                 for (let item of _data["transactions"])
@@ -1044,6 +1082,7 @@ export class CollectiveDto implements ICollectiveDto {
             for (let item of this.collectivesFeminists)
                 data["collectivesFeminists"].push(item.toJSON());
         }
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
         if (Array.isArray(this.transactions)) {
             data["transactions"] = [];
             for (let item of this.transactions)
@@ -1057,6 +1096,7 @@ export interface ICollectiveDto {
     id?: number;
     name?: string;
     collectivesFeminists?: FeministCollectiveDto[];
+    lastModified?: Date;
     transactions?: TransactionDto[];
 }
 
@@ -1220,6 +1260,7 @@ export class ExpenseDto implements IExpenseDto {
     id?: number;
     debtor?: FeministDto;
     amount?: number;
+    lastModified?: Date;
     transaction?: TransactionDto;
 
     constructor(data?: IExpenseDto) {
@@ -1236,6 +1277,7 @@ export class ExpenseDto implements IExpenseDto {
             this.id = _data["id"];
             this.debtor = _data["debtor"] ? FeministDto.fromJS(_data["debtor"]) : <any>undefined;
             this.amount = _data["amount"];
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
             this.transaction = _data["transaction"] ? TransactionDto.fromJS(_data["transaction"]) : <any>undefined;
         }
     }
@@ -1252,6 +1294,7 @@ export class ExpenseDto implements IExpenseDto {
         data["id"] = this.id;
         data["debtor"] = this.debtor ? this.debtor.toJSON() : <any>undefined;
         data["amount"] = this.amount;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
         data["transaction"] = this.transaction ? this.transaction.toJSON() : <any>undefined;
         return data;
     }
@@ -1261,6 +1304,7 @@ export interface IExpenseDto {
     id?: number;
     debtor?: FeministDto;
     amount?: number;
+    lastModified?: Date;
     transaction?: TransactionDto;
 }
 

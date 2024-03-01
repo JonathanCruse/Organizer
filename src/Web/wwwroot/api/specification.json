@@ -257,6 +257,27 @@
         }
       }
     },
+    "/api/Feminists/Balance": {
+      "get": {
+        "tags": [
+          "Feminists"
+        ],
+        "operationId": "GetBalance",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "float"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/TodoItems": {
       "get": {
         "tags": [
@@ -739,6 +760,10 @@
               "$ref": "#/components/schemas/FeministCollectiveDto"
             }
           },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
+          },
           "transactions": {
             "type": "array",
             "items": {
@@ -820,6 +845,10 @@
           "amount": {
             "type": "number",
             "format": "float"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
           },
           "transaction": {
             "$ref": "#/components/schemas/TransactionDto"

@@ -82,6 +82,9 @@ public class ApplicationDbContextInitialiser
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
             await _userManager.CreateAsync(administrator, "Administrator1!");
+            await _userManager.CreateAsync(feminist1, "Administrator1!");
+            await _userManager.CreateAsync(feminist2, "Administrator1!");
+            await _userManager.CreateAsync(feminist3, "Administrator1!");
             if (!string.IsNullOrWhiteSpace(administratorRole.Name))
             {
                 await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
