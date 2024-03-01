@@ -22,7 +22,7 @@ public class Collectives : EndpointGroupBase
     {
         return sender.Send(query);
     }
-    public Task<int> CreateCollective(ISender sender, [FromBody] CreateCollectiveCommand command)
+    public Task<int> CreateCollective(ISender sender, CreateCollectiveCommand command)
     {
         return sender.Send(command);
     }

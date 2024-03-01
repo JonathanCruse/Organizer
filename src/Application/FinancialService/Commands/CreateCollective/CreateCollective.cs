@@ -16,18 +16,19 @@ public class CreateCollectiveCommandValidator : AbstractValidator<CreateCollecti
             .NotNull()
             .NotEmpty()
             .MinimumLength(3)
-            .MinimumLength(150)
-            .WithMessage("Name must contain 3-150 letters");
+            .MaximumLength(150);
     }
 }
 
 public class CreateCollectiveCommandHandler : IRequestHandler<CreateCollectiveCommand, int>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IUser _user;
 
-    public CreateCollectiveCommandHandler(IApplicationDbContext context)
+    public CreateCollectiveCommandHandler(IApplicationDbContext context, IUser user)
     {
         _context = context;
+        _user = user;
     }
 
     public async Task<int> Handle(CreateCollectiveCommand request, CancellationToken cancellationToken)
@@ -36,6 +37,9 @@ public class CreateCollectiveCommandHandler : IRequestHandler<CreateCollectiveCo
             Name = request.Name,
         };
         _context.Collectives.Add(collective);
+
+        FeministCollective feministCollective = new FeministCollective { Feminist = _context.Feminists.Where(x => x.Id == _user.Id).First(), Collective = collective, Balance = 0 };
+        _context.FeministCollectives.Add(feministCollective);
         await _context.SaveChangesAsync(cancellationToken);
 
         return collective.Id;

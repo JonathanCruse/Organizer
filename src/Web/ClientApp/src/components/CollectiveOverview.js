@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CollectivesClient } from '../web-api-client.ts';
+import { CollectivesClient, FeministsClient } from '../web-api-client.ts';
 
 export class CollectiveOverview extends Component {
   static displayName = CollectiveOverview.name;
@@ -9,7 +9,9 @@ export class CollectiveOverview extends Component {
     this.state = {
       collectives: [],
       loading: true,
-      name: null
+      name: null,
+      email: null,
+      collectiveId: null
     };
   }
 
@@ -51,23 +53,31 @@ export class CollectiveOverview extends Component {
           {contents}
         </div>
 
-        {this.renderCreateCollective()}
+        <div class="container">
+          <div class="row">
+
+            {this.renderCreateCollective()}
+            {this.renderInviteFeminist()}
+          </div>
+        </div>
+
       </>
     );
   }
 
   renderCreateCollective() {
     return (
-      <form>
+      <form class="col-6">
+      <h2>Neues Kollektiv erstellen</h2>
         <div class="form-group mb-3">
-          <label class="form-label">Wie soll das neue Kollektiv heiﬂen?</label>
+          <label class="form-label">Wie soll das neue Kollektiv hei&amp;en?</label>
           <input class="form-control" type="text" name="name" value={this.state.name} onChange={x => this.handleNameChange(x.target.value)} />
         </div>
 
         <button type="button" class="btn btn-primary" onClick={async () => {
           let transactionClient = new CollectivesClient();
           await transactionClient.createCollective({ name: this.state.name });
-          document.location.reload();
+          setTimeout(1000, () => window.location.reload());
         }}>
           Neues Kollektiv erstellen
         </button>
@@ -75,9 +85,43 @@ export class CollectiveOverview extends Component {
       )
   }
 
+  renderInviteFeminist() {
+    return (
+      <form class="col-6">
+      <h2>User einladen</h2>
+        <div class="form-group mb-3">
+          <label class="form-label">E-Mail-Adresse</label>
+          <input class="form-control" type="text" name="email" value={this.state.email} onChange={x => this.handleInviteFeminist("email", x.target.value)} />
+        </div>
+        <div class="form-group mb-3">
+          <label class="form-label">F&uuml;r welches Kollektiv war die Ausgabe?</label>
+          <select name="collectiveid" class="form-control" value={this.state.collectiveId} onChange={x => this.handleInviteFeminist("collectiveId", x.target.value)}>
+            <option disabled >Bitte ausw&auml;hlen</option>
+            {this.state.collectives.map(function (x) {
+              return <option selected key={x.id} value={x.id}>{x.name}  </option>
+
+            })}
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-primary" onClick={async () => {
+          let feministClient = new FeministsClient();
+          await feministClient.createFeminist({ email: this.state.email, collectiveid : this.state.collectiveId });
+          window.location.reload();
+        }}>
+          Neues Kollektiv erstellen
+        </button>
+      </form>
+    )
+  }
+
   async handleNameChange(value) {
     await this.setState({ name: value});
   };
+  async handleInviteFeminist(type, value) {
+    if (type === "email") await this.setState({ email: value });
+    if (type === "collectiveId") await this.setState({ collectiveId: value });
+  }
 
   async polupateData() {
     let collectivesClient = new CollectivesClient();

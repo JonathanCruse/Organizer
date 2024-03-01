@@ -1,5 +1,6 @@
 ﻿using Organizer.Application.Common.Interfaces;
 using Organizer.Domain.Entities;
+using Organizer.Domain.Events;
 
 namespace Organizer.Application.FinancialService.Commands.CreateTransaction;
 
@@ -43,6 +44,8 @@ public class CreateTransactionCommandValidator : AbstractValidator<CreateTransac
             };
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync(cancellationToken);
+            transaction.GenerateExpenses();
+
 
             return transaction.Id;
         }
