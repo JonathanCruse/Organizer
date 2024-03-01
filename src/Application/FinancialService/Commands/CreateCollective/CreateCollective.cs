@@ -4,9 +4,8 @@ using Organizer.Domain.Entities;
 
 namespace Organizer.Application.FinancialService.Commands.CreateCollective;
 
-public record CreateCollectiveCommand : IRequest<int>
+public record CreateCollectiveCommand(string Name) : IRequest<int>
 {
-    public string Name { get; set; } = null!;
 }
 
 public class CreateCollectiveCommandValidator : AbstractValidator<CreateCollectiveCommand>
@@ -33,7 +32,7 @@ public class CreateCollectiveCommandHandler : IRequestHandler<CreateCollectiveCo
 
     public async Task<int> Handle(CreateCollectiveCommand request, CancellationToken cancellationToken)
     {
-        var collective = new Collective { 
+        Collective collective = new Collective { 
             Name = request.Name,
         };
         _context.Collectives.Add(collective);

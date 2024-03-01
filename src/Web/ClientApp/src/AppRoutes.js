@@ -1,5 +1,6 @@
 import { Counter } from "./components/Counter";
 import { FeministOverview } from "./components/FeministOverview";
+import { CollectiveOverview } from "./components/CollectiveOverview";
 import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 
@@ -9,16 +10,12 @@ const AppRoutes = [
     element: <Home />
   },
   {
-    path: '/counter',
-    element: <Counter />
-  },
-  {
-    path: '/fetch-data',
-    element: <FetchData />
-  },
-  {
     path: '/overview',
     element: <FeministOverview/>
+  },
+  {
+    path: '/collective',
+    element: <CollectiveOverview />
   }
 ];
 

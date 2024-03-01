@@ -1,4 +1,5 @@
-﻿using Organizer.Application.Common.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Organizer.Application.Common.Models;
 using Organizer.Application.FinancialService.Commands.CreateCollective;
 using Organizer.Application.FinancialService.Commands.DeleteCollective;
 using Organizer.Application.FinancialService.Dtos;
@@ -21,7 +22,7 @@ public class Collectives : EndpointGroupBase
     {
         return sender.Send(query);
     }
-    public Task<int> CreateCollective(ISender sender, CreateCollectiveCommand command)
+    public Task<int> CreateCollective(ISender sender, [FromBody] CreateCollectiveCommand command)
     {
         return sender.Send(command);
     }

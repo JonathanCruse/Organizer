@@ -14,7 +14,7 @@ public class CreateTransactionCommandValidator : AbstractValidator<CreateTransac
         RuleFor(x => x.Description)
             .NotNull()
             .NotEmpty()
-            .MaximumLength(3)
+            .MinimumLength(3)
             .MaximumLength(300)
             .WithMessage("Must contain between 3-300 letters");
         RuleFor(x => x.Amount)

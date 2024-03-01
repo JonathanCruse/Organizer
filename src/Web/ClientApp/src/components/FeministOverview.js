@@ -15,12 +15,11 @@ export class FeministOverview extends Component {
       balance_loading: true,
       amount: 0,
       description: 0,
-      collectiveId: null
+      collectiveid: null,
+      notice: ""
     };
   }
-  handleChange = (e) => {
-    this.setState({ value: e.target.value });
-  };
+
   componentDidMount() {
     this.populateData();
   }
@@ -88,31 +87,50 @@ export class FeministOverview extends Component {
 
   }
 
-  static renderCreateTransaction(collectives, amount, description, collectiveId) {
-    if (collectives.length > 0) {
+  renderCreateTransaction() {
+    if (this.state.collectives_data.length > 0) {
       return (
         <form>
           <div class="form-group">
+            <label class="form-label">Wieviel Geld hast Du ausgegeben?</label>
+            <input class="form-control" type="number" name="amount" value={this.state.amount} onChange={x => this.handleChange("amount", x.target.value)} />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Wof&uuml;r hast Du das Geld ausgegeben?</label>
+            <input class="form-control" type="text" name="description" value={this.state.description} onChange={x => this.handleChange("description", x.target.value)} />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">F&uuml;r welches Kollektiv war die Ausgabe?</label>
+            <select name="collectiveid" class="form-control" value={this.state.collectiveId} onChange={x => this.handleChange("collectiveid", x.target.value)}>
+              <option disabled >Bitte ausw&auml;hlen</option>
+              {this.state.collectives_data.map(function (x) {
+                return <option selected key={x.id} value={x.id}>{x.name}  </option>
 
-            <input class="form-control" type="number" name="Amount" value={amount} onChange={this.handleChange} />
-          </div>
-          <div class="form-group">
-            <input class="form-control" type="text" name="Description" value={description} onChange={this.handleChange} />
-          </div>
-          <div class="form-group">
-            <select name="Collective" class="form-control" value={collectiveId} onChange={this.handleChange}>
-              {collectives.map(x => {
-                <option selected value={x.id}>{x.name}</option>
               })}
             </select>
           </div>
 
-          <button onClick={() => { let transactionClient = new TransactionsClient(); transactionClient.createTransaction() }}>
+          <button type="button" class="btn btn-primary" onClick={async () => {
+            let transactionClient = new TransactionsClient();
+            await transactionClient.createTransaction({ description: this.state.description, amount: this.state.amount, collectiveId: this.state.collectiveid });
+            this.setState({ notice: "Bis die Ausgabe im Kollektiv verrechnet ist, kann etwas Zeit vergehen. Wir passen Deine Bilanz zeitnah an." });
+          }}>
             Ausgabe vergesellschaften
           </button>
         </form>
       )
     }
+  }
+
+  renderNotice() {
+    if (this.state.notice !== "")
+      return (
+        <div class="info alert alert-info" onClick={x => this.setState({ notice: "" })}>
+          <div>Ausgabe wurde dokumentiert</div>
+          <div>{this.state.notice}</div>
+        </div>
+      )
+    else return <div></div>
   }
 
   render() {
@@ -130,7 +148,7 @@ export class FeministOverview extends Component {
 
 
     return (
-      <>
+      <div>
         <div>
           <h1 id="tableLabel">Deine Ausgaben</h1>
           <p>Ich suche aktuell alle Infos zu Deinen Ausgaben - einen Moment bitte..</p>
@@ -147,12 +165,14 @@ export class FeministOverview extends Component {
           {balanceContent}
         </div>
 
-        {FeministOverview.renderCreateTransaction(this.state.collectives_data, this.state.amount, this.state.description, this.state.collectiveId)}
+        {this.renderCreateTransaction()}
 
-
-      </>
+        {this.renderNotice()}
+      </div>
     );
   }
+
+
 
   async populateData() {
 
@@ -163,11 +183,17 @@ export class FeministOverview extends Component {
 
     let collectivesClient = new CollectivesClient();
     const collectivesData = await collectivesClient.getCollectives(1, 1000);
-    this.setState({ collectives_data: collectivesData.items, collectives_loading: false });
+    this.setState({ collectives_data: collectivesData.items, collectives_loading: false, collectiveid: collectivesData.items[0].id });
 
     let feministClient = new FeministsClient();
     const balanceData = await feministClient.getBalance({});
     this.setState({ balance_data: balanceData, balance_loading: false });
   }
+
+  async handleChange(type, value) {
+    if (type === "amount") await this.setState({ amount: value });
+    if (type === "description") await this.setState({ description: value });
+    if (type === "collectiveid") await this.setState({ collectiveid: value });
+  };
 
 }
