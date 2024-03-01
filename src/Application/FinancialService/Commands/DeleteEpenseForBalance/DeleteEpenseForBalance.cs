@@ -2,7 +2,7 @@
 
 namespace Organizer.Application.FinancialService.Commands.DeleteEpenseForBalance;
 
-public record DeleteEpenseForBalanceCommand(int Id) : IRequest<object>
+public record DeleteEpenseForBalanceCommand(int Id) : IRequest
 {
 }
 
@@ -13,7 +13,7 @@ public class DeleteEpenseForBalanceCommandValidator : AbstractValidator<DeleteEp
     }
 }
 
-public class DeleteEpenseForBalanceCommandHandler : IRequestHandler<DeleteEpenseForBalanceCommand, object>
+public class DeleteEpenseForBalanceCommandHandler : IRequestHandler<DeleteEpenseForBalanceCommand>
 {
     private readonly IApplicationDbContext _context;
 
@@ -22,9 +22,10 @@ public class DeleteEpenseForBalanceCommandHandler : IRequestHandler<DeleteEpense
         _context = context;
     }
 
-    public async Task<object> Handle(DeleteEpenseForBalanceCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteEpenseForBalanceCommand request, CancellationToken cancellationToken)
     {
-        await Task.Delay(1);
-        throw new NotImplementedException();
+        _context.Expenses.Remove(_context.Expenses.Where(x => x.Id == request.Id).First());
+        await _context.SaveChangesAsync(cancellationToken);
+
     }
 }

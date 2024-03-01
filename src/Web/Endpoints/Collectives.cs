@@ -25,7 +25,6 @@ public class Collectives : EndpointGroupBase
             .MapGet(GetCollectives)
             .MapPost(CreateCollective)
             .MapDelete(DeleteCollective, "{id}");
-            ;
     }
 
     public Task<PaginatedList<CollectiveDto>> GetCollectives(ISender sender, [AsParameters] GetCollectivesForFeministQuery query)
@@ -39,12 +38,6 @@ public class Collectives : EndpointGroupBase
     public async Task<IResult> DeleteCollective(ISender sender, int id)
     {
         await sender.Send(new DeleteCollectiveCommand (id));
-        return Results.NoContent();
-    }
-
-    public async Task<IResult> DeleteSomethingElseCollective(ISender sender, int id)
-    {
-        await sender.Send(new DeleteCollectiveCommand(id));
         return Results.NoContent();
     }
 

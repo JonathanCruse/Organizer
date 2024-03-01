@@ -315,7 +315,7 @@ export class FeministsClient {
         return Promise.resolve<PaginatedListOfFeministDto>(null as any);
     }
 
-    createFeminist(command: InviteFeministCommand): Promise<number> {
+    createFeminist(command: InviteFeministCommand): Promise<void> {
         let url_ = this.baseUrl + "/api/Feminists";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -326,7 +326,6 @@ export class FeministsClient {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Accept": "application/json"
             }
         };
 
@@ -335,24 +334,20 @@ export class FeministsClient {
         });
     }
 
-    protected processCreateFeminist(response: Response): Promise<number> {
+    protected processCreateFeminist(response: Response): Promise<void> {
         followIfLoginRedirect(response);
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
-            return result200;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<number>(null as any);
+        return Promise.resolve<void>(null as any);
     }
 }
 
@@ -1371,6 +1366,7 @@ export interface IPaginatedListOfExpenseDto {
 
 export class CreateEpenseForBalanceCommand implements ICreateEpenseForBalanceCommand {
     amount?: number;
+    transactionId?: number;
 
     constructor(data?: ICreateEpenseForBalanceCommand) {
         if (data) {
@@ -1384,6 +1380,7 @@ export class CreateEpenseForBalanceCommand implements ICreateEpenseForBalanceCom
     init(_data?: any) {
         if (_data) {
             this.amount = _data["amount"];
+            this.transactionId = _data["transactionId"];
         }
     }
 
@@ -1397,12 +1394,14 @@ export class CreateEpenseForBalanceCommand implements ICreateEpenseForBalanceCom
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["amount"] = this.amount;
+        data["transactionId"] = this.transactionId;
         return data;
     }
 }
 
 export interface ICreateEpenseForBalanceCommand {
     amount?: number;
+    transactionId?: number;
 }
 
 export class PaginatedListOfFeministDto implements IPaginatedListOfFeministDto {
@@ -2111,6 +2110,7 @@ export interface IPaginatedListOfTransactionDto {
 export class CreateTransactionCommand implements ICreateTransactionCommand {
     description?: string;
     amount?: number;
+    collectiveId?: number;
 
     constructor(data?: ICreateTransactionCommand) {
         if (data) {
@@ -2125,6 +2125,7 @@ export class CreateTransactionCommand implements ICreateTransactionCommand {
         if (_data) {
             this.description = _data["description"];
             this.amount = _data["amount"];
+            this.collectiveId = _data["collectiveId"];
         }
     }
 
@@ -2139,6 +2140,7 @@ export class CreateTransactionCommand implements ICreateTransactionCommand {
         data = typeof data === 'object' ? data : {};
         data["description"] = this.description;
         data["amount"] = this.amount;
+        data["collectiveId"] = this.collectiveId;
         return data;
     }
 }
@@ -2146,6 +2148,7 @@ export class CreateTransactionCommand implements ICreateTransactionCommand {
 export interface ICreateTransactionCommand {
     description?: string;
     amount?: number;
+    collectiveId?: number;
 }
 
 export class WeatherForecast implements IWeatherForecast {

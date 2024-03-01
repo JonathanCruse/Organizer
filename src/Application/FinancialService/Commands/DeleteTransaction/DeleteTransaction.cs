@@ -1,8 +1,10 @@
-﻿using Organizer.Application.Common.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Organizer.Application.Common.Interfaces;
+using Organizer.Domain.Entities;
 
 namespace Organizer.Application.FinancialService.Commands.DeleteTransaction;
 
-public record DeleteTransactionCommand(int Id) : IRequest<object>
+public record DeleteTransactionCommand(int Id) : IRequest
 {
 }
 
@@ -13,7 +15,7 @@ public class DeleteTransactionCommandValidator : AbstractValidator<DeleteTransac
     }
 }
 
-public class DeleteTransactionCommandHandler : IRequestHandler<DeleteTransactionCommand, object>
+public class DeleteTransactionCommandHandler : IRequestHandler<DeleteTransactionCommand>
 {
     private readonly IApplicationDbContext _context;
 
@@ -22,9 +24,12 @@ public class DeleteTransactionCommandHandler : IRequestHandler<DeleteTransaction
         _context = context;
     }
 
-    public async Task<object> Handle(DeleteTransactionCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteTransactionCommand request, CancellationToken cancellationToken)
     {
-        await Task.Delay(1);
-        throw new NotImplementedException();
+        var transaction = _context.Transactions.Where(x => x.Id == request.Id).First();
+        _context.Expenses.RemoveRange(transaction.Expenses);
+        _context.Transactions.Remove(transaction);
+
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }

@@ -1,8 +1,9 @@
 ﻿using Organizer.Application.Common.Interfaces;
+using Organizer.Domain.Entities;
 
 namespace Organizer.Application.FinancialService.Commands.CreateTransaction;
 
-public record CreateTransactionCommand(string Description, float Amount) : IRequest<int>
+public record CreateTransactionCommand(string Description, float Amount, int collectiveId) : IRequest<int>
 {
 }
 
@@ -24,16 +25,26 @@ public class CreateTransactionCommandValidator : AbstractValidator<CreateTransac
     public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, int>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IUser _user;
 
-        public CreateTransactionCommandHandler(IApplicationDbContext context)
+        public CreateTransactionCommandHandler(IApplicationDbContext context, IUser user)
         {
             _context = context;
+            _user = user;
         }
 
         public async Task<int> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
         {
-            await Task.Delay(1);
-            throw new NotImplementedException();
+            var transaction = new Transaction { 
+                Description = request.Description,
+                Amount = request.Amount,
+                Creditor = _context.Feminists.Where(x => x.Id == _user.Id).First(),
+                Debtor = _context.Collectives.Where(x => x.Id == request.collectiveId).First(),
+            };
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return transaction.Id;
         }
     }
 }

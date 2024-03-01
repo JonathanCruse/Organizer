@@ -32,7 +32,7 @@ public class Feminists : EndpointGroupBase
         return sender.Send(query);
     }
 
-    public Task<int> CreateFeminist(ISender sender, InviteFeministCommand command)
+    public Task CreateFeminist(ISender sender, InviteFeministCommand command)
     {
         return sender.Send(command);
     }

@@ -1,5 +1,6 @@
 ﻿using Organizer.Application.Common.Interfaces;
 using FluentValidation.Validators;
+using Organizer.Domain.Entities;
 
 namespace Organizer.Application.FinancialService.Commands.CreateCollective;
 
@@ -32,7 +33,12 @@ public class CreateCollectiveCommandHandler : IRequestHandler<CreateCollectiveCo
 
     public async Task<int> Handle(CreateCollectiveCommand request, CancellationToken cancellationToken)
     {
-        await Task.Delay(1);
-        throw new NotImplementedException();
+        var collective = new Collective { 
+            Name = request.Name,
+        };
+        _context.Collectives.Add(collective);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return collective.Id;
     }
 }

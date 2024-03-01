@@ -1,8 +1,10 @@
-﻿using Organizer.Application.Common.Interfaces;
+﻿using Organizer.Application.Common.Exceptions;
+using Organizer.Application.Common.Interfaces;
+using Organizer.Domain.Entities;
 
 namespace Organizer.Application.FinancialService.Commands.InviteFeminist;
 
-public record InviteFeministCommand(string Email, int CollectiveId) : IRequest<int>
+public record InviteFeministCommand(string Email, int CollectiveId) : IRequest
 {
 }
 
@@ -17,7 +19,7 @@ public class InviteFeministCommandValidator : AbstractValidator<InviteFeministCo
     }
 }
 
-public class InviteFeministCommandHandler : IRequestHandler<InviteFeministCommand, int>
+public class InviteFeministCommandHandler : IRequestHandler<InviteFeministCommand>
 {
     private readonly IApplicationDbContext _context;
 
@@ -26,9 +28,19 @@ public class InviteFeministCommandHandler : IRequestHandler<InviteFeministComman
         _context = context;
     }
 
-    public async Task<int> Handle(InviteFeministCommand request, CancellationToken cancellationToken)
+    public async Task Handle(InviteFeministCommand request, CancellationToken cancellationToken)
     {
-        await Task.Delay(1);
-        throw new NotImplementedException();
+        var user = _context.Feminists.Where(x => x.Email == request.Email).First();
+        if (user == null) { throw new UserMustRegisterFIrstException(); }
+        var collective = _context.Collectives.Where(x => x.Id == request.CollectiveId).First();
+
+        var FeministCollectives = new FeministCollective
+        {
+            Balance = 0,
+            Feminist = user,
+            Collective = collective
+        };
+        _context.FeministCollectives.Add(FeministCollectives);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }

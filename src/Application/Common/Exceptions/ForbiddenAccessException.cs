@@ -1,6 +1,6 @@
 ﻿namespace Organizer.Application.Common.Exceptions;
 
-public class ForbiddenAccessException : Exception
+public class UserMustRegisterFIrstException : Exception
 {
-    public ForbiddenAccessException() : base() { }
+    public UserMustRegisterFIrstException() : base() { }
 }

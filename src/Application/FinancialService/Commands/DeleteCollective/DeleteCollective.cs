@@ -1,4 +1,5 @@
 ﻿using Organizer.Application.Common.Interfaces;
+using Organizer.Domain.Entities;
 
 namespace Organizer.Application.FinancialService.Commands.DeleteCollective;
 
@@ -24,7 +25,14 @@ public class DeleteCollectiveCommandHandler : IRequestHandler<DeleteCollectiveCo
 
     public async Task Handle(DeleteCollectiveCommand request, CancellationToken cancellationToken)
     {
-        await Task.Delay(1);
-        throw new NotImplementedException();
+        Collective collective = _context.Collectives.Where(x => x.Id == request.id).First();
+        foreach (var item in collective.Transactions)
+        {
+            _context.Expenses.RemoveRange(item.Expenses);
+            _context.Transactions.Remove(item);
+        }
+        _context.Collectives.Remove(collective);
+
+        await _context.SaveChangesAsync(cancellationToken);
     }
 }
