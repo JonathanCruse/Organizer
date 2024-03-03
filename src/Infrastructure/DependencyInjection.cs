@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Organizer.Domain.Entities;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -16,8 +17,10 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionStringRedis = configuration.GetConnectionString("Redis");
 
         Guard.Against.Null(connectionString, message: "Connection string 'DefaultConnection' not found.");
+        Guard.Against.Null(connectionStringRedis, message: "Connection string 'Redis' not found.");
 
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
@@ -29,6 +32,11 @@ public static class DependencyInjection
             options
             .UseLazyLoadingProxies()
             .UseSqlServer(connectionString);
+        });
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = connectionStringRedis;
+            options.InstanceName = "API";
         });
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());

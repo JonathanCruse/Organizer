@@ -38,7 +38,7 @@ public class Feminists : EndpointGroupBase
         return sender.Send(new GetBalanceForFeministQuery());
     }
 
-    public Task CreateFeminist(ISender sender, InviteFeministCommand command)
+    public Task CreateFeminist(ISender sender, [FromBody] InviteFeministCommand command)
     {
         return sender.Send(command);
     }

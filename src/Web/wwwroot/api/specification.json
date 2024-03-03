@@ -839,9 +839,6 @@
             "type": "integer",
             "format": "int32"
           },
-          "debtor": {
-            "$ref": "#/components/schemas/FeministDto"
-          },
           "amount": {
             "type": "number",
             "format": "float"
@@ -849,9 +846,6 @@
           "lastModified": {
             "type": "string",
             "format": "date-time"
-          },
-          "transaction": {
-            "$ref": "#/components/schemas/TransactionDto"
           }
         }
       },

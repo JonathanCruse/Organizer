@@ -32,16 +32,15 @@ public class TransactionCreatedEventHandler : INotificationHandler<TransactionCr
         var mapping = collective.CollectivesFeminists.Select(x => new { Feminist =  x.Feminist, income = x.Feminist.MonthlyIncome ?? 0f, partition= 0f});
         var overallMonthlyIncome = mapping.Sum(x => x.income);
         if (mapping.Any(x => x.income == 0) ) {
-            float eavenSplit = 1 / mapping.Count(); ;
+            float eavenSplit = 1f / (float)mapping.Count(); ;
             mapping = mapping.Select(x => new { Feminist = x.Feminist, income = x.income, partition = eavenSplit });
         } else
         {
-            mapping = mapping.Select(x => new { Feminist = x.Feminist, income = x.income, partition = (float)overallMonthlyIncome / x.income });
+            mapping = mapping.Select(x => new { Feminist = x.Feminist, income = x.income, partition = x.income / (float)overallMonthlyIncome  });
         }
 
         _context.Expenses.AddRange(mapping.Select(x => new Expense { Amount = transaction.Amount * x.partition, Debtor = x.Feminist, Transaction = transaction }));
-        await _context.SaveChangesAsync(cancellationToken);
-
+         await _context.SaveChangesAsync(cancellationToken);
 
         return;
 

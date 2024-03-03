@@ -36,7 +36,7 @@ public class CreateTransactionCommandValidator : AbstractValidator<CreateTransac
 
         public async Task<int> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
         {
-            var transaction = new Transaction { 
+            Transaction transaction = new Organizer.Domain.Entities.Transaction { 
                 Description = request.Description,
                 Amount = request.Amount,
                 Creditor = _context.Feminists.Where(x => x.Id == _user.Id).First(),
@@ -44,8 +44,8 @@ public class CreateTransactionCommandValidator : AbstractValidator<CreateTransac
             };
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync(cancellationToken);
-            transaction.GenerateExpenses();
-
+            transaction.AddDomainEvent(new TransactionCreatedEvent(transaction));
+            await _context.SaveChangesAsync(cancellationToken);
 
             return transaction.Id;
         }

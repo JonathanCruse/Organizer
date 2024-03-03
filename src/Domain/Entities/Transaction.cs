@@ -13,8 +13,4 @@ public class Transaction : BaseAuditableEntity
     public virtual Feminist Creditor { get; set; } = new Feminist();
     public virtual Collective Debtor { get; set; } = new Collective();
     public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
-    public void GenerateExpenses()
-    {
-        AddDomainEvent(new TransactionCreatedEvent(this));
-    }
 }

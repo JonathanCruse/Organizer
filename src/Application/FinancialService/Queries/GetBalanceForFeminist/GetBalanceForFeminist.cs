@@ -1,4 +1,5 @@
-﻿using Organizer.Application.Common.Exceptions;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using Organizer.Application.Common.Exceptions;
 using Organizer.Application.Common.Interfaces;
 using Organizer.Application.Common.Models;
 
@@ -19,23 +20,32 @@ public class GetBalanceForFeministQueryHandler : IRequestHandler<GetBalanceForFe
 {
     private readonly IApplicationDbContext _context;
     private readonly IUser _user;
+    private readonly IDistributedCache _distributedCache;
 
-    public GetBalanceForFeministQueryHandler(IApplicationDbContext context, IUser user)
+    public GetBalanceForFeministQueryHandler(IApplicationDbContext context, IUser user, IDistributedCache distributedCache)
     {
         _context = context;
         _user = user;
+        _distributedCache = distributedCache;
     }
 
     public async Task<float> Handle(GetBalanceForFeministQuery request, CancellationToken cancellationToken)
     {
-        await Task.Delay(1);
-        var user = _context.Feminists.Where(x => x.Id == _user.Id).First();
-        if (user is null) throw new ForbiddenAccessException();
+        Guard.Against.Null(_user.Id);
+        var cacheKey = "balance-" + _user.Id;
+        var cachedBalance = await _distributedCache.GetStringAsync(cacheKey, cancellationToken);
+        float sum;
+        if (cachedBalance == null) {
+            var user = _context.Feminists.Where(x => x.Id == _user.Id).First();
+            if (user is null) throw new ForbiddenAccessException();
 
-        var collectives = user.FeministsCollectives;
-        if (collectives is null) return 0;
+            var collectives = user.FeministsCollectives;
+            if (collectives is null) return 0;
 
-
-        return collectives.Sum(x => x.Balance);
+            sum = collectives.Sum(x => x.Balance);
+            await _distributedCache.SetStringAsync(cacheKey, sum.ToString(), cancellationToken);
+            return sum;
+        }
+        return (float)Convert.ToInt32(cachedBalance);
     }
 }

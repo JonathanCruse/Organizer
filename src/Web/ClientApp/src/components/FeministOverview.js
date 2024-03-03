@@ -178,11 +178,11 @@ export class FeministOverview extends Component {
 
 
     let expenseClient = new ExpensesClient();
-    const expenseData = await expenseClient.getExpenses(1, 1000);
+    const expenseData = await expenseClient.getExpenses(1, 100);
     this.setState({ expenses_data: expenseData.items, expenses_loading: false });
 
     let collectivesClient = new CollectivesClient();
-    const collectivesData = await collectivesClient.getCollectives(1, 1000);
+    const collectivesData = await collectivesClient.getCollectives(1, 100);
     this.setState({ collectives_data: collectivesData.items, collectives_loading: false, collectiveid: collectivesData.items[0].id });
 
     let feministClient = new FeministsClient();

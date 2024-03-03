@@ -1258,10 +1258,8 @@ export interface ITransactionDto {
 
 export class ExpenseDto implements IExpenseDto {
     id?: number;
-    debtor?: FeministDto;
     amount?: number;
     lastModified?: Date;
-    transaction?: TransactionDto;
 
     constructor(data?: IExpenseDto) {
         if (data) {
@@ -1275,10 +1273,8 @@ export class ExpenseDto implements IExpenseDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
-            this.debtor = _data["debtor"] ? FeministDto.fromJS(_data["debtor"]) : <any>undefined;
             this.amount = _data["amount"];
             this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
-            this.transaction = _data["transaction"] ? TransactionDto.fromJS(_data["transaction"]) : <any>undefined;
         }
     }
 
@@ -1292,20 +1288,16 @@ export class ExpenseDto implements IExpenseDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
-        data["debtor"] = this.debtor ? this.debtor.toJSON() : <any>undefined;
         data["amount"] = this.amount;
         data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
-        data["transaction"] = this.transaction ? this.transaction.toJSON() : <any>undefined;
         return data;
     }
 }
 
 export interface IExpenseDto {
     id?: number;
-    debtor?: FeministDto;
     amount?: number;
     lastModified?: Date;
-    transaction?: TransactionDto;
 }
 
 export class CreateCollectiveCommand implements ICreateCollectiveCommand {
